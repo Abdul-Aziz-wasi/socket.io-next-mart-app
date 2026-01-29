@@ -31,6 +31,17 @@ io.on("connection",(socket)=>{
         io.emit("update-deliveryBoy-location",{userId,location})
     })
 
+    socket.on("join-room",(roomId)=>{
+        socket.join(roomId)
+        console.log("user joined room",roomId)
+    })
+
+    socket.on("send-message",async(message)=>{
+        console.log(message)
+        await axios.post(`${process.env.NEXT_BASE_URL}/api/chat/save`,message)
+        io.to(message.roomId).emit("send-message",message)
+    })
+
     
 
     socket.on("disconnect",()=>{
